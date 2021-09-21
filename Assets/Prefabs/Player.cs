@@ -6,11 +6,19 @@ using UnityEngine.InputSystem;
 public class Player : MonoBehaviour
 {
     [SerializeField] float movementSpeed = 5f;
-
+    [SerializeField] Transform groundCheck;
+    [SerializeField] float groundCheckRadius = 0.1f;
+    [SerializeField] LayerMask GroundLayerMask;
     InputActions inputActions;
     Vector2 moveInput; //because the controls on the keyboard only work in 2 dimensions.
     Vector3 Velocity; //3d movement
     CharacterController characterController;
+    float Gravity = -9.81f;
+
+    bool IsOnGround()
+    {
+        return Physics.CheckSphere(groundCheck.position, groundCheckRadius, GroundLayerMask);
+    }
 
     private void Awake()
     {
@@ -44,7 +52,15 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Velocity = GetPlayerDesiredMoveDirection() * movementSpeed;
+        Debug.Log(Velocity);
+
+        if (IsOnGround())
+        {
+            Velocity.y = -0.2f;
+        }
+        Velocity.x = GetPlayerDesiredMoveDirection().x * movementSpeed;
+        Velocity.z = GetPlayerDesiredMoveDirection().z * movementSpeed;
+        Velocity.y += Gravity * Time.deltaTime;
         characterController.Move(Velocity * Time.deltaTime);
 
     }
