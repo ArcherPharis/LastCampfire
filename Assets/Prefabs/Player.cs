@@ -9,6 +9,7 @@ public class Player : MonoBehaviour
     [SerializeField] Transform groundCheck;
     [SerializeField] float groundCheckRadius = 0.1f;
     [SerializeField] LayerMask GroundLayerMask;
+    [SerializeField] float turnSpeed = 5f;
     InputActions inputActions;
     Vector2 moveInput; //because the controls on the keyboard only work in 2 dimensions.
     Vector3 Velocity; //3d movement
@@ -17,7 +18,7 @@ public class Player : MonoBehaviour
 
     bool IsOnGround()
     {
-        return Physics.CheckSphere(groundCheck.position, groundCheckRadius, GroundLayerMask);
+        return Physics.CheckSphere(groundCheck.position, groundCheckRadius, GroundLayerMask); //checking if we're touching something with ground layer
     }
 
     private void Awake()
@@ -52,8 +53,6 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(Velocity);
-
         if (IsOnGround())
         {
             Velocity.y = -0.2f;
@@ -62,11 +61,25 @@ public class Player : MonoBehaviour
         Velocity.z = GetPlayerDesiredMoveDirection().z * movementSpeed;
         Velocity.y += Gravity * Time.deltaTime;
         characterController.Move(Velocity * Time.deltaTime);
+        UpdateRotation();
 
     }
 
     Vector3 GetPlayerDesiredMoveDirection()
     {
         return new Vector3(-moveInput.y, 0f, moveInput.x).normalized; //normalized keeps it to one button press
+    }
+
+    void UpdateRotation()
+    {
+        Vector3 PlayerDesiredDirection = GetPlayerDesiredMoveDirection(); //desired direction is direction pressed.
+        if(PlayerDesiredDirection.magnitude == 0)
+        {
+            PlayerDesiredDirection = transform.forward;
+        }
+
+        Quaternion DesiredRotation = Quaternion.LookRotation(PlayerDesiredDirection, Vector3.up); //look based on that direction.
+        transform.rotation = Quaternion.Lerp(transform.rotation, DesiredRotation, Time.deltaTime * turnSpeed);
+
     }
 }
