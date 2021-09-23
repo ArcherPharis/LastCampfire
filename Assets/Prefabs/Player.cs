@@ -53,6 +53,11 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(IsOnGround() == false)
+        {
+            characterController.Move(-Velocity * Time.deltaTime);
+        }
+
         if (IsOnGround())
         {
             Velocity.y = -0.2f;
@@ -81,5 +86,17 @@ public class Player : MonoBehaviour
         Quaternion DesiredRotation = Quaternion.LookRotation(PlayerDesiredDirection, Vector3.up); //look based on that direction.
         transform.rotation = Quaternion.Lerp(transform.rotation, DesiredRotation, Time.deltaTime * turnSpeed);
 
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Ladder"))
+        {
+
+            Velocity.y = Mathf.Sqrt(50f * -3.0f * Gravity);
+        }
+
+        Velocity.y += Gravity * Time.deltaTime;
+        characterController.Move(Velocity * Time.deltaTime);
     }
 }
