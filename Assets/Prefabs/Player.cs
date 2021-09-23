@@ -10,11 +10,52 @@ public class Player : MonoBehaviour
     [SerializeField] float groundCheckRadius = 0.1f;
     [SerializeField] LayerMask GroundLayerMask;
     [SerializeField] float turnSpeed = 5f;
+    [SerializeField] float LadderClimbAngleDegrees = 20f;
     InputActions inputActions;
     Vector2 moveInput; //because the controls on the keyboard only work in 2 dimensions.
     Vector3 Velocity; //3d movement
     CharacterController characterController;
     float Gravity = -9.81f;
+    Ladder CurrentClimbingLadder;
+    List<Ladder> LaddersNearby = new List<Ladder>();
+
+
+
+    public void NotifyLadderNearby(Ladder ladderNearby)
+    {
+        LaddersNearby.Add(ladderNearby);
+    }
+
+    public void NotifyLadderExit(Ladder ladderExit)
+    {
+        if (ladderExit == CurrentClimbingLadder)
+        {
+            CurrentClimbingLadder = null;
+            
+        }
+        LaddersNearby.Remove(ladderExit);
+    }
+
+    Ladder FindPlayerClimbingLadder()
+    {
+        Vector3 PlayerDesiredMoveDirection = GetPlayerDesiredMoveDirection();
+        Ladder ChosenLadder = null;
+        float ClosestAngle = 180.0f;
+        foreach(Ladder ladder in LaddersNearby)
+        {
+            Vector3 LadderDirection = ladder.transform.position - transform.position;
+            LadderDirection.y = 0;
+            LadderDirection.Normalize();
+            float Dot = Vector3.Dot(PlayerDesiredMoveDirection, LadderDirection);
+            float AngleDegrees = Mathf.Acos(Dot) * Mathf.Rad2Deg;
+            if(AngleDegrees < LadderClimbAngleDegrees && AngleDegrees < ClosestAngle)
+            {
+                ChosenLadder = ladder;
+                ClosestAngle = AngleDegrees;
+            }
+        }
+        return ChosenLadder;
+    }
 
     bool IsOnGround()
     {
@@ -53,6 +94,19 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        if(CurrentClimbingLadder == null)
+        {
+            CurrentClimbingLadder = FindPlayerClimbingLadder();
+        }
+
+        if (CurrentClimbingLadder != null)
+        {
+            Debug.Log("test");
+        }
+
+
+
         if(IsOnGround() == false)
         {
             characterController.Move(-Velocity * Time.deltaTime);
@@ -88,15 +142,4 @@ public class Player : MonoBehaviour
 
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.CompareTag("Ladder"))
-        {
-
-            Velocity.y = Mathf.Sqrt(50f * -3.0f * Gravity);
-        }
-
-        Velocity.y += Gravity * Time.deltaTime;
-        characterController.Move(Velocity * Time.deltaTime);
-    }
 }
