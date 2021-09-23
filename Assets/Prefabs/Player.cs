@@ -115,16 +115,17 @@ public class Player : MonoBehaviour
             HopOnLadder(FindPlayerClimbingLadder());
         }
 
+        if (IsOnGround())
+        {
+            Velocity.y = -0.2f;
+            HopOnLadder(CurrentClimbingLadder);
+        }
 
-        if(IsOnGround() == false)
+        if (IsOnGround() == false)
         {
             characterController.Move(-Velocity * Time.deltaTime);
         }
 
-        if (IsOnGround())
-        {
-            HopOnLadder(CurrentClimbingLadder);
-        }
         Velocity.x = GetPlayerDesiredMoveDirection().x * movementSpeed;
         Velocity.z = GetPlayerDesiredMoveDirection().z * movementSpeed;
         Velocity.y += Gravity * Time.deltaTime;
