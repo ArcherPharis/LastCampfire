@@ -91,20 +91,29 @@ public class Player : MonoBehaviour
 
     }
 
+    void HopOnLadder(Ladder ladderToHopOn) //ladderToHopOn is literally just saying I'm the script.
+    {
+        if (ladderToHopOn == null) return;
+
+        if(ladderToHopOn != CurrentClimbingLadder)
+        {
+            Transform snapToTransform = ladderToHopOn.GetClosestSnapTransform(transform.position);
+            characterController.Move(snapToTransform.position - transform.position);
+            transform.rotation = snapToTransform.rotation;
+            CurrentClimbingLadder = ladderToHopOn;
+
+            Debug.Log("ladder hopped on");
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
 
         if(CurrentClimbingLadder == null)
         {
-            CurrentClimbingLadder = FindPlayerClimbingLadder();
+            HopOnLadder(FindPlayerClimbingLadder());
         }
-
-        if (CurrentClimbingLadder != null)
-        {
-            Debug.Log("test");
-        }
-
 
 
         if(IsOnGround() == false)
@@ -114,7 +123,7 @@ public class Player : MonoBehaviour
 
         if (IsOnGround())
         {
-            Velocity.y = -0.2f;
+            HopOnLadder(CurrentClimbingLadder);
         }
         Velocity.x = GetPlayerDesiredMoveDirection().x * movementSpeed;
         Velocity.z = GetPlayerDesiredMoveDirection().z * movementSpeed;

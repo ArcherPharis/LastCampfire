@@ -36,4 +36,12 @@ public class Ladder : MonoBehaviour
             otherAsPlayer.NotifyLadderExit(this);
         }
     }
+
+    public Transform GetClosestSnapTransform(Vector3 Position)
+    {
+        float distanceToTop = Vector3.Distance(Position, topTransform.position); //distance to top?
+        float distanceTopBottom = Vector3.Distance(Position, bottomTransform.position); //distance to bottom?
+        return distanceToTop < distanceTopBottom ? topTransform : bottomTransform; //which is the closest? we use distancetox so we don't have to write the whole thing out each time.
+    }
+
 }
