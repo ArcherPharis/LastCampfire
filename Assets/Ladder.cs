@@ -31,7 +31,7 @@ public class Ladder : MonoBehaviour
     private void OnTriggerExit(Collider other)
     {
         Player otherAsPlayer = other.GetComponent<Player>();
-        if (otherAsPlayer!=null)
+        if (otherAsPlayer != null)
         {
             otherAsPlayer.NotifyLadderExit(this);
         }
