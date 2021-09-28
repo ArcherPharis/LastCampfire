@@ -84,7 +84,17 @@ public class Player : MonoBehaviour
         characterController = GetComponent<CharacterController>();
         inputActions.Gameplay.Move.performed += MoveInputsUpdated;
         inputActions.Gameplay.Move.canceled += MoveInputsUpdated;
+        inputActions.Gameplay.Interact.performed += Interact;
         
+    }
+
+    void Interact(InputAction.CallbackContext context)
+    {
+        InteractComponent interactComponent = GetComponentInChildren<InteractComponent>();
+        if (interactComponent != null)
+        {
+            interactComponent.Interact(); //this is talking about the Interact in INteractComponant
+        }
     }
 
     void MoveInputsUpdated(InputAction.CallbackContext context)
@@ -101,29 +111,39 @@ public class Player : MonoBehaviour
         if (ladderToHopOn != CurrentClimbingLadder)
         {
             Transform snapToTransform = ladderToHopOn.GetClosestSnapTransform(transform.position);
-            characterController.Move(snapToTransform.position - transform.position);
-            transform.rotation = snapToTransform.rotation;
             CurrentClimbingLadder = ladderToHopOn;
+            StartCoroutine(MoveToTransform(snapToTransform, 0.2f)); //the method requires a transform and a float
 
             Debug.Log("ladder hopped on");
         }
     }
 
-     IEnumerator ClimbingLadderCoroutine()
+    IEnumerator MoveToTransform(Transform destiation, float transformTime)
     {
-        while (Vector3.Distance(transform.position, CurrentClimbingLadder.transform.position) > 0)
-        {
-            HopOnLadder(FindPlayerClimbingLadder());
+        inputActions.Gameplay.Move.Disable();
+        Vector3 startPosition = transform.position;
+        Vector3 endPosition = destiation.position;
+        Quaternion StartRot = transform.rotation;
+        Quaternion EndRot = destiation.rotation;
 
-            yield return null;
+        float timer = 0f;
+        while(timer < transformTime)
+        {
+            timer += Time.deltaTime;
+            //movement, character controller requires the vector 3.
+            Vector3 deltaMove = Vector3.Lerp(startPosition, endPosition, timer/transformTime) - transform.position;
+            characterController.Move(deltaMove);
+            //rotation, doesn't require, just rotates the transform
+            transform.rotation = Quaternion.Lerp(StartRot, EndRot, timer/transformTime);
+            yield return new WaitForEndOfFrame();
+
         }
 
-        Debug.Log("starting coroutine");
 
-        yield return new WaitForSeconds(1f);
-
-        Debug.Log("ending coroutine");
+        inputActions.Gameplay.Move.Enable();
     }
+
+    
 
     // Update is called once per frame
     void Update()
@@ -137,7 +157,6 @@ public class Player : MonoBehaviour
         if (CurrentClimbingLadder)
         {
             CalculateClimingVelocity();
-            StartCoroutine(ClimbingLadderCoroutine());
         }
         else
         {
@@ -154,16 +173,19 @@ public class Player : MonoBehaviour
         if (moveInput.magnitude == 0)
         {
             Velocity = Vector3.zero;
+            return;
         }
 
-        Vector3 LadderDirection = CurrentClimbingLadder.transform.forward;
+        Vector3 LadderDirection = -CurrentClimbingLadder.transform.right;
         Vector3 PlayerDesiredMoveDirection = GetPlayerDesiredMoveDirection();
 
         float Dot = Vector3.Dot(LadderDirection, PlayerDesiredMoveDirection);
 
+        Velocity = Vector3.zero;
+
         if (Dot < 0)
         {
-            //Velocity = GetPlayerDesiredMoveDirection() * movementSpeed;
+            Velocity = GetPlayerDesiredMoveDirection() * movementSpeed;
             Velocity.y = movementSpeed;
         }else
         {
