@@ -84,6 +84,7 @@ public class Player : MonoBehaviour
         characterController = GetComponent<CharacterController>();
         inputActions.Gameplay.Move.performed += MoveInputsUpdated;
         inputActions.Gameplay.Move.canceled += MoveInputsUpdated;
+        
     }
 
     void MoveInputsUpdated(InputAction.CallbackContext context)
@@ -108,6 +109,22 @@ public class Player : MonoBehaviour
         }
     }
 
+     IEnumerator ClimbingLadderCoroutine()
+    {
+        while (Vector3.Distance(transform.position, CurrentClimbingLadder.transform.position) > 0)
+        {
+            HopOnLadder(FindPlayerClimbingLadder());
+
+            yield return null;
+        }
+
+        Debug.Log("starting coroutine");
+
+        yield return new WaitForSeconds(1f);
+
+        Debug.Log("ending coroutine");
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -120,6 +137,7 @@ public class Player : MonoBehaviour
         if (CurrentClimbingLadder)
         {
             CalculateClimingVelocity();
+            StartCoroutine(ClimbingLadderCoroutine());
         }
         else
         {
