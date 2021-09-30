@@ -16,7 +16,7 @@ public class Player : MonoBehaviour
     Vector3 Velocity; //3d movement
     CharacterController characterController;
     float EdgeTrackingDistance = 0.1f;
-    float EdgeTrackingDepth = 1f;
+    float EdgeTrackingDepth = 10f;
     float Gravity = -9.81f;
     Ladder CurrentClimbingLadder;
     List<Ladder> LaddersNearby = new List<Ladder>();

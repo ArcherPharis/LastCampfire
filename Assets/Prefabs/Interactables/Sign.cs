@@ -15,6 +15,7 @@ public class Sign : Interactable //you are based off Interactable. YOU are an In
     Color DialogueBGColor;
     float Opacity;
     Coroutine TransitionCoroutine;
+    
 
     void GoToNextDialogue()
     {
@@ -23,8 +24,15 @@ public class Sign : Interactable //you are based off Interactable. YOU are an In
             return;
         }
 
+        if (currentDialogueIndex == dialogues.Length - 1)
+        {
+            SetOpacity(0);
+        }
+
         currentDialogueIndex = (currentDialogueIndex + 1) % dialogues.Length;
         dialogue.text = dialogues[currentDialogueIndex];
+
+
     }
 
     // basically let's you use a cutomized version of interactable without changing the original script.
@@ -38,6 +46,8 @@ public class Sign : Interactable //you are based off Interactable. YOU are an In
         {
             dialogue.text = dialogues[0];
         }
+
+
         else
         {
             dialogue.text = "";
@@ -51,6 +61,12 @@ public class Sign : Interactable //you are based off Interactable. YOU are an In
         dialogue.color = DialogueTextColor * ColorMult;
         backroundImage.color = DialogueBGColor * ColorMult;
         Opacity = opacity;
+
+        if(opacity == 0f)
+        {
+            dialogue.text = dialogues[0]; //ontriggestay?
+            currentDialogueIndex = 0;
+        }
 
 
     }
@@ -96,17 +112,26 @@ public class Sign : Interactable //you are based off Interactable. YOU are an In
             
             TransitionCoroutine = StartCoroutine(TransitionOpacityTo(0f));
         }
-        dialogue.text = dialogues[0]; //ontriggestay?
+        
 
     }
+
     // Update is called once per frame
     void Update()
     {
-        
+
     }
+
+
 
     public override void Interact() //being treated as Interact for everything else, but overrides the original Interact and replaces with this one.
     {
+
+
+
+
+        Debug.Log("Last element: " + dialogues[dialogues.Length - 1]);
+
         GoToNextDialogue();
     }
 }
