@@ -11,6 +11,7 @@ public class Player : MonoBehaviour
     [SerializeField] LayerMask GroundLayerMask;
     [SerializeField] float turnSpeed = 5f;
     [SerializeField] float LadderClimbAngleDegrees = 20f;
+    [SerializeField] Transform PickupSocketInfo;
     InputActions inputActions;
     Vector2 moveInput; //because the controls on the keyboard only work in 2 dimensions.
     Vector3 Velocity; //3d movement
@@ -20,6 +21,11 @@ public class Player : MonoBehaviour
     float Gravity = -9.81f;
     Ladder CurrentClimbingLadder;
     List<Ladder> LaddersNearby = new List<Ladder>();
+
+    public Transform GetPickupSocketTransform()
+    {
+        return PickupSocketInfo;
+    }
 
 
 

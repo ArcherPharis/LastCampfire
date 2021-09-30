@@ -4,14 +4,13 @@ using UnityEngine;
 
 public class Weight : Interactable
 {
-    [SerializeField] GameObject playerItemTransform;
-    [SerializeField] bool canPickup;
+
     [SerializeField] bool hasItem;
 
     // Start is called before the first frame update
     void Start()
     {
-        canPickup = false;
+        
         hasItem = false;
     }
 
@@ -21,28 +20,90 @@ public class Weight : Interactable
         
     }
 
+
     private void OnTriggerEnter(Collider other)
     {
         InteractComponent interactComponent = other.GetComponent<InteractComponent>();
 
         if (interactComponent)
         {
-            canPickup = true;
+            
         }
+
+        //if (other.gameObject.CompareTag("Plate") && hasItem == true)
+        //{
+            //PutDown();
+        //}
+
     }
 
     private void OnTriggerExit(Collider other)
     {
-        canPickup = false;
+        
     }
 
-    public override void Interact()
+
+    public virtual void PickUp(GameObject PickerGameObject)
     {
-        if (canPickup == true)
+        Transform pickUpSocketTransform = PickerGameObject.transform;
+
+        Player PickerAsPlayer = PickerGameObject.GetComponent<Player>();
+        if (PickerAsPlayer != null)
         {
-            transform.position = playerItemTransform.transform.position;
-            transform.transform.parent = playerItemTransform.transform;
+            pickUpSocketTransform = PickerAsPlayer.GetPickupSocketTransform();
+        }
+
+        GetComponent<Rigidbody>().useGravity = false;
+        GetComponent<Rigidbody>().isKinematic = true;
+
+        transform.rotation = pickUpSocketTransform.rotation;
+        transform.parent = pickUpSocketTransform;
+        transform.localPosition = Vector3.zero;
+
+
+
+
+        //old code
+        //if (canPickup == true)
+        //{
+            //transform.position = playerItemTransform.transform.position;
+            //transform.transform.parent = playerItemTransform.transform;
+           // hasItem = true;
+        //}
+    }
+    
+    public virtual void PutDown()
+    {
+
+        GetComponent<Rigidbody>().useGravity = true;
+        GetComponent<Rigidbody>().isKinematic = false;
+        transform.localPosition = Vector3.forward;
+        transform.parent = null;
+        hasItem = false;
+
+
+
+        //old code
+        //transform.position = plateItemTransform.transform.position;
+        //transform.transform.parent = plateItemTransform.transform;
+        //hasItem = false;
+    }
+
+    public override void Interact(GameObject InteractingGameObject)
+    {
+     Vector3 DirFromInteractingGameObj = (transform.position - InteractingGameObject.transform.position);
+        Vector3 DirOfInteractingGameObj = InteractingGameObject.transform.forward;
+        float Dot = Vector3.Dot(DirOfInteractingGameObj, DirFromInteractingGameObj);
+        if(Dot > 0.5f)
+        {
+            PickUp(InteractingGameObject);
             hasItem = true;
         }
+
+        if(Dot == 0 && hasItem == true)
+        {
+            PutDown();
+        }
+
     }
 }

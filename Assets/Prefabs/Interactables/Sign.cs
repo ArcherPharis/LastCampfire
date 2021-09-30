@@ -124,7 +124,7 @@ public class Sign : Interactable //you are based off Interactable. YOU are an In
 
 
 
-    public override void Interact() //being treated as Interact for everything else, but overrides the original Interact and replaces with this one.
+    public override void Interact(GameObject InteractingGameObject = null) //being treated as Interact for everything else, but overrides the original Interact and replaces with this one.
     {
 
 
