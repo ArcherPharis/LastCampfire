@@ -169,6 +169,8 @@ public class Player : MonoBehaviour
             CalculateWalkingVelocity();
         }
 
+
+
         characterController.Move(Velocity * Time.deltaTime);
         UpdateRotation();
 

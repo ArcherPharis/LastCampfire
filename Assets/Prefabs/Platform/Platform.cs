@@ -26,7 +26,7 @@ public class Platform : MonoBehaviour
     IEnumerator MoveToTransform(Transform Destination, float TransitionTime)
     {
         float timer = 0f;
-        while(timer > TransitionTime)
+        while(timer < TransitionTime)
         {
             timer += Time.deltaTime;
             objectToMove.position = Vector3.Lerp(objectToMove.position, Destination.position, timer / TransitionTime);
