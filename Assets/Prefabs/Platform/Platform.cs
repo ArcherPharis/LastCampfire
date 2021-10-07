@@ -2,13 +2,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Platform : MonoBehaviour
+public class Platform : MonoBehaviour, Toggable
 {
     [SerializeField] Transform objectToMove;
     [SerializeField] float transitionTime;
 
     public Transform StartTrans;
     public Transform EndTrans;
+
+    public void ToggleOn()
+    {
+        MoveTo(true);
+    }
+
+    public void ToggleOff()
+    {
+        MoveTo(false);
+    }
+
+    public void MoveTo(bool moveTo)
+    {
+
+    }
 
     Coroutine movingCouroutine;
   public void MoveTo(Transform Destination)

@@ -6,18 +6,16 @@ public class ArtifactSlot : MonoBehaviour
 {
 
     [SerializeField] Transform ArtifactSlotTrans;
-    [SerializeField] Platform platformToMove;
+    [SerializeField] GameObject TogglingObject;
 
     public void OnArtifactLeft()
     {
-        Debug.Log("Artifact Left me");
-        platformToMove.MoveTo(platformToMove.StartTrans);
+        TogglingObject.GetComponent<Toggable>().ToggleOff();
     }
 
     public void OnArtifactPlaced()
     {
-        platformToMove.MoveTo(platformToMove.EndTrans);
-        Debug.Log("Artifact place on me");
+        TogglingObject.GetComponent<Toggable>().ToggleOn();
     }
 
     public Transform GetSlotsTrans()
