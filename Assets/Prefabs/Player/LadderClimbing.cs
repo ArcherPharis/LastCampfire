@@ -8,7 +8,7 @@ public class LadderClimbing : MonoBehaviour
     [SerializeField] float LadderClimbAngleDegrees = 20f;
     [SerializeField] float LadderHopOnTime = 0.2f;
 
-    Ladder CurrentClimbingLadder;
+    public Ladder CurrentClimbingLadder;
     List<Ladder> LaddersNearby = new List<Ladder>();
     IInputActionCollection inputAction;
 

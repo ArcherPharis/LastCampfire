@@ -9,23 +9,32 @@ public class CameraTransition : MonoBehaviour
     [SerializeField] CinemachineVirtualCamera destinationCam;
     [SerializeField] float TransitionTime = 2.0f;
     [SerializeField] CinemachineBrain brain;
-    
 
-    private void OnTriggerEnter(Collider other)
+    CameraTriggering ct;
+
+    private void Start()
     {
-        if (other.gameObject.CompareTag("Player"))
+        ct = GetComponent<CameraTriggering>();
+    }
+
+    void MoveCam()
+    {
+        if(ct.triggered == true)
         {
             brain.m_DefaultBlend.m_Time = TransitionTime;
             destinationCam.Priority = 1000;
         }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.gameObject.CompareTag("Player"))
+        else
         {
-            brain.m_DefaultBlend.m_Time = TransitionTime - 1;
             destinationCam.Priority = 1;
         }
     }
+
+    private void Update()
+    {
+        MoveCam();
+    }
+
+
+
 }

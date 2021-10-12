@@ -101,6 +101,8 @@ public class MovementComponent : MonoBehaviour
             return;
         }
         Vector3 PlayerDesiredMoveDirection = GetPlayerDesiredMoveDirection();
+        LadderDir = -transform.right;
+
 
         float Dot = Vector3.Dot(LadderDir, PlayerDesiredMoveDirection);
 

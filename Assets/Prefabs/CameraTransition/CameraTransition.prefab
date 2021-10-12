@@ -183,6 +183,7 @@ GameObject:
   - component: {fileID: 9110253375273947424}
   - component: {fileID: -5956831020909445522}
   - component: {fileID: 4835573007164392598}
+  - component: {fileID: 538962423355090358}
   m_Layer: 0
   m_Name: CameraTransition
   m_TagString: Untagged
@@ -246,5 +247,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0bd59abcadfd064dbbfede14b05c584, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  vcam1: {fileID: 5853144941980886186}
+  destinationCam: {fileID: 0}
+  TransitionTime: 2
   brain: {fileID: 0}
+--- !u!114 &538962423355090358
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8445402062863957481}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b97f57078dce4ac48824a8ba9bc4a456, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

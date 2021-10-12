@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Platform : MonoBehaviour, Toggable
@@ -20,9 +19,16 @@ public class Platform : MonoBehaviour, Toggable
         MoveTo(false);
     }
 
-    public void MoveTo(bool moveTo)
+    public void MoveTo(bool ToEnd)
     {
-
+        if (ToEnd)
+        {
+            MoveTo(EndTrans);
+        }
+        else
+        {
+            MoveTo(StartTrans);
+        }
     }
 
     Coroutine movingCouroutine;
@@ -43,9 +49,10 @@ public class Platform : MonoBehaviour, Toggable
         float timer = 0f;
         while(timer < TransitionTime)
         {
-            timer += Time.deltaTime;
+            
             objectToMove.position = Vector3.Lerp(objectToMove.position, Destination.position, timer / TransitionTime);
             objectToMove.rotation = Quaternion.Lerp(objectToMove.rotation, Destination.rotation, timer / TransitionTime);
+            timer += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
     }
